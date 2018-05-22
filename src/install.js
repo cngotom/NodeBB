@@ -464,6 +464,7 @@ function enableDefaultPlugins(next) {
 		'nodebb-plugin-soundpack-default',
 		'nodebb-plugin-emoji',
 		'nodebb-plugin-emoji-android',
+//    'nodebb-plugin-kxqapp-login',
 	];
 	var customDefaults = nconf.get('defaultplugins') || nconf.get('defaultPlugins');
 

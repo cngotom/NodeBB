@@ -1,0 +1,7 @@
+{
+	"id": "nodebb-plugin-kxqapp-login",
+	"library": "./library.js",
+	"hooks": [
+		{ "hook": "filter:auth.init", "method": "getStrategy" }
+	]
+}

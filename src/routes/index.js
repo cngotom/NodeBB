@@ -224,7 +224,7 @@ module.exports = function (app, middleware, hotswapIds, callback) {
 	async.series([
 		async.apply(plugins.reloadRoutes),
 		async.apply(authRoutes.reloadRoutes),
-		async.apply(user.addInterstitials),
+		//async.apply(user.addInterstitials),
 		function (next) {
 			winston.info('Routes added');
 			next();
