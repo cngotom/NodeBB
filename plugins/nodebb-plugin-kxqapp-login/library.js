@@ -3,11 +3,13 @@ var	winston = module.parent.require('winston'),
 	passportLocal = module.parent.require('passport-local').Strategy,
   db = module.parent.require('../src/database'),
   user = module.parent.require('./user'),
+  axios = require('axios'),
 	plugin = {};
 
 var passportCustom = module.parent.require('passport-custom'),
     CustomStrategy = passportCustom.Strategy;
 
+plugin.AuthHost = "http://api.firewinggames.com"
 
 plugin.getStrategy = function(strategies,callback) {
 	winston.info('[login] Registering kxqlogin');
@@ -16,8 +18,27 @@ plugin.getStrategy = function(strategies,callback) {
   passport.use('strategy-kxq', new CustomStrategy(
     function(req, callback) {
       // Do your custom user finding logic here, or set to false based on req object
-      console.log("req is ",req)
+      console.log("token is ",req.query.token)
+      console.log("appid is ",req.query.appid)
+      axios.get(`${plugin.AuthHost}/auth/decodetoken/${req.query.appid}/${req.query.token}/`)
+      .then(response => {
+        let username = response.data.username
+        let nickname  = response.data.nickname
+        console.log("username ",username, " nickname ",nickname)
+        plugin.login(username,nickname ,function(err,uid){
+          if(err){
+            callback(err)
+          }else{
+            callback(null, uid);
+          }
+        })
+      }).catch( error => {
+        console.log(error)
+        callback(error)
+      });
+
       //validate
+      /*
       plugin.login(req.query.kxqid,req.query.nickname ,function(err,uid){
         if(err){
           callback(err)
@@ -25,6 +46,7 @@ plugin.getStrategy = function(strategies,callback) {
           callback(null, uid);
         }
       })
+      */
 
     }
   ));
