@@ -9,7 +9,8 @@ var	winston = module.parent.require('winston'),
 var passportCustom = module.parent.require('passport-custom'),
     CustomStrategy = passportCustom.Strategy;
 
-plugin.AuthHost = "http://api.firewinggames.com"
+plugin.AuthHost = process.env.KXQ_AUTH_HOST ||  "http://10.0.1.70:7777"
+plugin.AppKey = process.env.KXQ_AUTH_APPKEY || "f708f41b3287c331b1f7e61d46c1e5fb"
 
 plugin.getStrategy = function(strategies,callback) {
 	winston.info('[login] Registering kxqlogin');
@@ -19,11 +20,10 @@ plugin.getStrategy = function(strategies,callback) {
     function(req, callback) {
       // Do your custom user finding logic here, or set to false based on req object
       console.log("token is ",req.query.token)
-      console.log("appid is ",req.query.appid)
-      axios.get(`${plugin.AuthHost}/auth/decodetoken/${req.query.appid}/${req.query.token}/`)
+      axios.get(`${plugin.AuthHost}/auth/decodetoken/${plugin.AppKey}/${req.query.token}`)
       .then(response => {
         let username = response.data.username
-        let nickname  = response.data.nickname
+        let nickname  = response.data.nicheng
         console.log("username ",username, " nickname ",nickname)
         plugin.login(username,nickname ,function(err,uid){
           if(err){
@@ -72,6 +72,7 @@ plugin.login = function(kxqid, handle, callback) {
 
     if (uid !== null) {
       // Existing User
+   //   user.setUserField(uid, 'username', "4444");
       callback(null, {
         uid: uid
       });
